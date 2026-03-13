@@ -1,159 +1,145 @@
 # Laboratorio-6-Adri-n-Alc-ntara-
 Comandos utilizados en las practicas de Linux
-Practica 1 – Cifrado con GPG2
 
-Actualizar repositorios
+===================================
+PRACTICA 1 - Cifrado con GPG2
+===================================
 
-sudo apt update
+# Actualizar repositorios e instalar repositorios 
+sudo apt update && sudo apt upgrade -y
 
-Instalar GPG2
-
+# Instalar GPG2
 sudo apt install gnupg2
 
-Verificar instalacion
-
+# Verificar instalacion
 gpg –version
 
-Crear directorio
+# Crear directorio
+sudo mkdir cifrado
 
-mkdir cifrado
-
-Entrar al directorio
-
+# Entrar al directorio
 cd cifrado
 
-Crear archivo
+# Crear archivo
+sudo nano secreto.txt
 
-nano secreto.txt
-
-Cifrar archivo
-
+# Cifrar archivo
 gpg -c secreto.txt
 
-Ver archivo cifrado
-
+# Ver archivo cifrado
 cat secreto.txt.gpg
 
-Descifrar archivo
+# Borrar el archivo original
+sudo rm secreto.txt
 
+# Descifrar archivo
 gpg secreto.txt.gpg
 
-Mostrar contenido
-
+# Mostrar contenido
 cat secreto.txt
 
-Practica 2 – Firewall con IPTables y UFW
+=========================================
+PRACTICA 2 - Firewall con IPTables y ufw
+=========================================
 
-Instalar servidor web HTTP
+# Actualizar repositorios e instalar repositorios 
+sudo apt update && sudo apt upgrade -y
 
+# Instalar servidor web HTTP
 sudo apt install apache2
 
-Verificar servicio
-
+# Verificar servicio
 sudo systemctl status apache2
 
-Instalar FTP
-
+# Instalar FTP
 sudo apt install vsftpd
 
-Verificar servicio FTP
-
+# Verificar servicio FTP
 sudo systemctl status vsftpd
 
-Instalar SSH
-
+# Instalar SSH
 sudo apt install openssh-server
 
-Verificar servicio SSH
-
+# Verificar servicio SSH
 sudo systemctl status ssh
 
-Bloquear puertos con IPTables
+# Bloquear puertos con IPTables
+sudo iptables -A INPUT -p tcp –dport 80 -j DROP 
+sudo iptables -A INPUT -p tcp –dport 21 -j DROP 
+sudo iptables -A INPUT -p tcp –dport 22 -j DROP
 
-sudo iptables -A INPUT -p tcp –dport 80 -j DROP sudo iptables -A INPUT
--p tcp –dport 21 -j DROP sudo iptables -A INPUT -p tcp –dport 22 -j DROP
-
-Ver reglas
-
+# Ver reglas
 sudo iptables -L
 
-Eliminar reglas
+# Eliminar reglas
+sudo iptables -D INPUT -p tcp –dport 80 -j DROP 
+sudo iptables -D INPUT -p tcp –dport 21 -j DROP 
+sudo iptables -D INPUT -p tcp –dport 22 -j DROP
 
-sudo iptables -D INPUT -p tcp –dport 80 -j DROP sudo iptables -D INPUT
--p tcp –dport 21 -j DROP sudo iptables -D INPUT -p tcp –dport 22 -j DROP
+**------UFW------**
 
-Activar UFW
-
+# Activar UFW
 sudo ufw enable
 
-Ver estado
-
+# Ver estado
 sudo ufw status
 
-Bloquear puertos
+# Bloquear puertos
+sudo ufw deny 80 
+sudo ufw deny 21 
+sudo ufw deny 22
 
-sudo ufw deny 80 sudo ufw deny 21 sudo ufw deny 22
+# Permitir nuevamente
+sudo ufw allow 80 
+sudo ufw allow 21 
+sudo ufw allow 22
 
-Permitir nuevamente
+========================
+PRACTICA 3 - IDS Snort
+========================
 
-sudo ufw allow 80 sudo ufw allow 21 sudo ufw allow 22
+# Actualizar repositorios e instalar repositorios 
+sudo apt update && sudo apt upgrade -y
 
-Practica 3 – IDS Snort
+# Instalar Snort
+sudo apt install snort
 
-Instalar Snort
-
-sudo apt update sudo apt install snort
-
-Ver version
-
-snort -V
-
-Ver interfaces de red
-
-ip a
-
-Editar reglas locales
-
+# Editar reglas locales
 sudo nano /etc/snort/rules/local.rules
 
-Probar configuracion
-
+# Probar configuracion
 sudo snort -T -c /etc/snort/snort.conf
 
-Ejecutar Snort
+# Ejecutar Snort
+sudo snort -A console -q -c /etc/snort/snort.conf -i ens33
 
-sudo snort -A console -q -c /etc/snort/snort.conf -i eth0
-
-Pruebas desde la maquina host
-
-ping IP_DE_LA_VM ssh usuario@IP_DE_LA_VM ftp IP_DE_LA_VM
-
-Acceso web
-
+# Pruebas desde la maquina host
+ping IP_DE_LA_VM 
+ssh usuario@IP_DE_LA_VM 
+ftp IP_DE_LA_VM
 http://IP_DE_LA_VM
 
-Practica 4 – 2FA con Google Authenticator para SSH
+====================================================
+PRACTICA 4 - 2FA con Google Authenticator para SSH
+====================================================
 
-Instalar Google Authenticator PAM
+# Actualizar repositorios e instalar repositorios 
+sudo apt update && sudo apt upgrade -y
 
-sudo apt update sudo apt install libpam-google-authenticator
+# Instalar Google Authenticator PAM
+sudo apt install libpam-google-authenticator
 
-Configurar autenticador
-
+# Configurar autenticador
 google-authenticator
 
-Configurar PAM
-
+# Configurar PAM
 sudo nano /etc/pam.d/sshd
 
-Configurar SSH
-
+# Configurar SSH
 sudo nano /etc/ssh/sshd_config
 
-Reiniciar SSH
-
+# Reiniciar SSH
 sudo systemctl restart ssh
 
-Probar acceso desde host
-
+# Probar acceso desde host
 ssh usuario@IP_DE_LA_VM
